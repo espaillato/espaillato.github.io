@@ -6,19 +6,19 @@ date: 2025-12-24
 
 This document describes **exactly** how to reproduce my current personal development environment:
 
-- Windows as host OS
-- WSL2 (Ubuntu) as the development OS
-- Bash + Starship
-- Java, Python, Rust, Node.js (clean, isolated, reproducible)
-- VS Code + AI (ChatGPT for reasoning, Continue for execution)
-- Git hardened for SSH + GitHub privacy
-- Minimal but powerful CLI tooling
+- [Windows as host OS](#preconditions)
+- [WSL2 (Ubuntu) as the development OS](#wsl2-ubuntu)
+- [Bash + Starship](#bash-starship)
+- [Java](#java-toolchain), [Python](#python-pyenv), [Rust](#rust), [Node.js](#nodejs) (clean, isolated, reproducible)
+- [VS Code + AI (ChatGPT for reasoning, Continue for execution)](#vscode-wsl)
+- [Git hardened for SSH + GitHub privacy](#git-ssh-github-privacy)
+- [Minimal but powerful CLI tooling](#common-cli-tools)
 
 This is **not** a generic guide. Follow it top-to-bottom for the same result.
 
 ---
 
-## 0. Preconditions
+## 0. Preconditions {#preconditions}
 
 - Windows 10 22H2+ or Windows 11
 - Virtualization enabled in BIOS
@@ -27,7 +27,7 @@ This is **not** a generic guide. Follow it top-to-bottom for the same result.
 
 ---
 
-## 1. Install WSL2 + Ubuntu
+## 1. Install WSL2 + Ubuntu {#wsl2-ubuntu}
 
 Open **PowerShell as Administrator**:
 
@@ -75,7 +75,7 @@ sudo apt install -y \
 
 ---
 
-## 3. Shell: Bash + Starship
+## 3. Shell: Bash + Starship {#bash-starship}
 
 ### Ensure Bash is default shell
 
@@ -175,7 +175,7 @@ Verify:
 
 ---
 
-## 4. VS Code + WSL
+## 4. VS Code + WSL {#vscode-wsl}
 
 ### Install VS Code (Windows)
 
@@ -205,7 +205,7 @@ WSL: Ubuntu
 
 ---
 
-## 5. Java Toolchain (SDKMAN)
+## 5. Java Toolchain (SDKMAN) {#java-toolchain}
 
 ### Install SDKMAN
 
@@ -241,7 +241,7 @@ sdk install gradle
 
 ---
 
-## 6. Python (pyenv + venv-first)
+## 6. Python (pyenv + venv-first) {#python-pyenv}
 
 ### Install dependencies
 
@@ -291,7 +291,7 @@ pip install -U pip
 
 ---
 
-## 7. Node.js (nvm)
+## 7. Node.js (nvm) {#nodejs}
 
 ### Install nvm
 
@@ -310,7 +310,7 @@ node -v
 
 ---
 
-## 8. Rust
+## 8. Rust {#rust}
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -320,7 +320,7 @@ rustup component add rustfmt clippy
 
 ---
 
-## 9. Common CLI Tools
+## 9. Common CLI Tools {#common-cli-tools}
 
 ```bash
 sudo apt install -y \
@@ -354,7 +354,7 @@ exec bash
 
 ---
 
-## 11. Git (SSH + GitHub privacy)
+## 11. Git (SSH + GitHub privacy) {#git-ssh-github-privacy}
 
 ### SSH preference
 
