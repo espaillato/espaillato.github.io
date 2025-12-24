@@ -6,3 +6,9 @@ theme: jekyll-theme-architect
 
 gems:
   - jekyll-mentions
+
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
