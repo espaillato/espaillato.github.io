@@ -1,10 +1,8 @@
 ---
 layout: post
-title: "Windows + WSL Development Environment (Exact Setup Guide)"
+title: "Windows + WSL Development Environment (Setup Guide)"
 date: 2025-12-24
 ---
-
-# Windows + WSL Development Environment (Exact Setup Guide)
 
 This document describes **exactly** how to reproduce my current personal development environment:
 
