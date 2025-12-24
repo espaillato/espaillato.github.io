@@ -183,13 +183,26 @@ Download: https://code.visualstudio.com
 
 Install with defaults.
 
-### Install Remote WSL extension
+### Install extensions
 
-In VS Code → Extensions:
+In VS Code → Extensions (Windows side):
 
-```
-Remote - WSL
-```
+- Remote - WSL
+
+Inside the WSL environment (server-side extensions):
+
+- Python
+- Pylance
+- Python Environments
+- Debugpy
+- Extension Pack for Java
+- Maven for Java
+- Gradle for Java
+- Java Debugger
+- Java Test Runner
+- Java Dependency Viewer
+- ShellCheck
+- Continue
 
 ### Launch VS Code from WSL
 
