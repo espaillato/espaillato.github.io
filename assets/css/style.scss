@@ -3,6 +3,28 @@
 
 @import "{{ site.theme }}";
 
+body {
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+a {
+  color: #58a6ff;
+}
+
+header,
+footer,
+.site-footer,
+.site-header {
+  background: #0b0f14;
+  color: #c9d1d9;
+}
+
+blockquote {
+  border-left: 4px solid #30363d;
+  color: #8b949e;
+}
+
 pre,
 code {
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
@@ -10,16 +32,19 @@ code {
 }
 
 pre {
-  background: #2d2d2d;
-  color: #f8f8f2;
-  padding: 0.9rem;
+  position: relative;
+  background: #161b22;
+  color: #c9d1d9;
+  padding: 0.9rem 1rem;
   border-radius: 6px;
+  border: 1px solid #30363d;
   overflow: auto;
   line-height: 1.45;
 }
 
 code {
-  background: #f0f0f0;
+  background: #161b22;
+  color: #c9d1d9;
   padding: 0.15em 0.3em;
   border-radius: 4px;
 }
@@ -29,8 +54,30 @@ pre code {
   padding: 0;
 }
 
+.code-copy-button {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #c9d1d9;
+  cursor: pointer;
+}
+
+.code-copy-button:hover {
+  background: #161b22;
+}
+
+.code-copy-button.copied {
+  color: #3fb950;
+  border-color: #238636;
+}
+
 .highlight .hll { background-color: #49483e }
-.highlight  { background: #3A3C42; color: #f8f8f2 }
+.highlight  { background: #161b22; color: #c9d1d9 }
 .highlight .c { color: #75715e } /* Comment */
 .highlight .err { color: #960050; background-color: #1e0010 } /* Error */
 .highlight .k { color: #66d9ef } /* Keyword */
