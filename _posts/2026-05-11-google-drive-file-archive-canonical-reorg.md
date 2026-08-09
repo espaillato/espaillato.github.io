@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "What Actually Fixed a Decade of Google Drive Sprawl (It Wasn't the Script)"
+title: "What Actually Fixed a Decade of Google Drive Sprawl"
 date: 2026-05-11
 ---
 
 A shared household Google Drive accumulates documents for years before anyone looks at it as a system rather than a dumping ground. Mine had two dozen top-level folders, several of them near-duplicates of each other (a typo'd second category next to the real one, two folders that meant almost the same thing under different names), plus a scattering of one-off folders sitting at the same level as major life categories. No consistent convention for whose document something was, whether it was shared, or whether it was a stable reference versus a one-time record.
 
-This is the story of fixing that — and of the first approach failing at the one part that actually mattered, while accidentally producing the thing that made the second approach work.
+This is the story of fixing that, including how the first approach failed at the one part that actually mattered, and what it produced along the way that made the second approach work.
 
 - [The starting mess](#starting-mess)
 - [Attempt one: a scripted, rules-based pipeline](#attempt-one)
@@ -16,7 +16,7 @@ This is the story of fixing that — and of the first approach failing at the on
 - [The automation boundary: when to just do it vs. when to ask](#automation-boundary)
 - [Keeping the living notes honest, not just the archive](#living-notes-honest)
 - [Inside the philosophy document](#the-philosophy-doc)
-- [The lesson: the "failed" project wasn't wasted](#the-lesson)
+- [What carried over from the first attempt](#the-lesson)
 - [The living-reference layer](#living-reference)
 - [End state](#end-state)
 
@@ -26,7 +26,7 @@ This is the story of fixing that — and of the first approach failing at the on
 
 A read-only audit script walked the archive and produced a blunt table: folder name, subfolder count, file count. The top of that table told the whole story — near-duplicate category names differing only by a typo or a synonym, several single-digit-file folders that existed only because something needed *somewhere* to go at the time, and no folder anywhere indicating whose document it was or whether it was shared.
 
-None of that is unusual. It's what any shared drive looks like after years of ad hoc "just put it somewhere for now." The problem isn't that it happened — it's that without something to return to, it never un-happens on its own.
+None of that is unusual. It's what any shared drive looks like after years of ad hoc "just put it somewhere for now." Without something to return to, it doesn't undo itself.
 
 ---
 
@@ -47,13 +47,13 @@ Some of that held up well and is worth keeping regardless of what does the class
 
 What the script couldn't do was hold a *reason*, only a keyword. Real placement rules look like "if it proves who you are, it belongs here regardless of who issued it" or "if a doctor would care about it, it belongs in Health" or "this specific abbreviation looks like it belongs in one category but is explicitly excluded because of how a particular process actually works." Those are judgment calls, not string matches — and every one of them eventually showed up as a real misfile that had to get caught by hand and turned into yet another keyword-list exception, in a rule list that only ever grew, never simplified.
 
-That ceiling is exactly why the true output of that first project ended up being a document, not a script: writing down every one of those "if X, then Y, because Z" rules — in prose, in one place, as the actual reasoning rather than a keyword fragment — turned out to be far more valuable than the code that (imperfectly) tried to enforce it. Calling the scripted pipeline "a failure" isn't quite fair — it did the dedup, the shortcut hygiene, and the plan/apply safety rails correctly, and those pieces are still true today. But as a *classifier*, it plateaued well below what the archive actually needed, and the document it forced into existence turned out to matter more than the classifier itself.
+That ceiling is why the real output of that first project was a document, not a script: writing down every one of those "if X, then Y, because Z" rules — in prose, in one place, as the actual reasoning rather than a keyword fragment — turned out to be far more valuable than the code that (imperfectly) tried to enforce it. Calling the scripted pipeline "a failure" isn't quite fair — it did the dedup, the shortcut hygiene, and the plan/apply safety rails correctly, and those pieces are still true today. But as a *classifier*, it plateaued well below what the archive actually needed, and the document it forced into existence turned out to matter more than the classifier itself.
 
 ---
 
 ## 3. What actually worked: two skills, one rulebook {#what-worked}
 
-The fix wasn't a smarter keyword list. It was replacing the keyword list with something that can actually *read*: two narrow, purpose-built Claude skills sitting on top of the archive, both anchored to the same reasoning document instead of a hard-coded rule table.
+The fix replaced the keyword list with something that can actually *read*: two narrow, purpose-built Claude skills sitting on top of the archive, both anchored to the same reasoning document instead of a hard-coded rule table.
 
 - **A filer**, triggered by anything that looks like filing work — a specific file pointed at, a batch of downloads to sort, someone just asking "where does this go?" It reads a file's actual content, decides what it is, and derives the correct name and location from the rulebook.
 - **An auditor**, triggered by review requests ("are my files organized?", "anything out of place?") and also run proactively on a weekly schedule regardless of whether anyone asks. It sweeps the archive for naming/placement/duplicate violations and classifies each finding into "fix it automatically," "hand off to the filer," or "ask the user" — never all the way to silent judgment calls.
@@ -123,14 +123,12 @@ The rule that matters more than any individual category name: **every category g
 | Finance | Affects net worth, cash flow, or taxes. |
 | Home | Changes when you move. |
 | Work | Matters only because of where you're employed. |
-| Family | The organizing axis is a specific person, not a topic — see the override rule below. |
+| Family | The organizing axis is a specific person (non-primary family member), not a topic — see the override rule below. |
 | Personal | Losing it is annoying, not dangerous. |
 | Individual | About you as a person, outside of work or family. |
 | Unsorted | Explicitly "not yet categorized" — a real bucket, not a place things drift by default. |
 
 A few things about that list generalize past any one household. It's short on purpose — a dozen or so buckets is few enough to hold in your head, which matters more than being exhaustive, since an `Unsorted` escape hatch means it never *needs* to be exhaustive. Every row is a test, not a topic — "what would someone searching for this actually assume it's filed under" beats "what's this document about" as the question to design each row around. And a couple of categories exist specifically to prevent a subtler failure than plain sprawl: **Individual** exists because "about you, but not work and not family" is a real, recurring bucket that otherwise silently collapses into an ever-vaguer "Personal," and **Family** deliberately overrides every other category for a defined set of people, because *who* a document is about occasionally needs to outrank *what* it's about — worth deciding once, explicitly, rather than re-litigating per document.
-
-One category deliberately isn't listed here at all, on reflection: a bucket for security keys and recovery codes. Cataloging "this is where the master keys live" — even just the *label* of the folder, with no content shown — is exactly the kind of metadata that turns a generic personal archive into a targeted one for anyone who gets a look at the taxonomy. That kind of material still needs a home, just not a *named, published* one.
 
 - **A subfolder-pattern table**, separate from the category table — person-based, joint, by-institution, by-year, by-asset, by-project, or a staging/inbox pattern for anything not yet triaged — because *what* a document is about and *how* it should be sliced within its category are genuinely different questions.
 - **Explicit naming conventions**: a consistent case style, dates always prefixed and always in a sortable numeric form, acronyms handled consistently, every file required to have a real extension.
@@ -143,21 +141,21 @@ It ends with a line that's stuck with me past this one project: *clever systems 
 
 ---
 
-## 8. The lesson: the "failed" project wasn't wasted {#the-lesson}
+## 8. What carried over from the first attempt {#the-lesson}
 
-It's tempting to write off the first attempt entirely once the second one clearly works better. That's not quite right, and it's worth resisting for a specific reason: the operational discipline the script enforced — plan before you apply, quarantine before you delete, log every action, never let the thing doing the classifying also be the thing with write access — didn't stop mattering just because an agent replaced the classifier. If anything it matters more, since an agent making placement judgment calls needs those guardrails at least as much as a keyword matcher did, arguably more. The ask-vs-auto boundary described above is, at heart, the same instinct in a different shape.
+It's tempting to write off the first attempt once the second one clearly works better. The operational discipline the script enforced — plan before you apply, quarantine before you delete, log every action, never let the thing doing the classifying also be the thing with write access — still matters with an agent in place of the classifier. An agent making placement judgment calls needs those guardrails at least as much as a keyword matcher did, arguably more. The ask-vs-auto boundary from the automation-boundary section above is the same instinct, applied to a different kind of decision-maker.
 
-And concretely: without being forced to sit down and encode "why does this belong here" as an actual, explicit rule — because a keyword list demanded it — the reasoning document that made the second approach work might never have gotten written at all. The failure mode and the artifact that fixed it came out of the same effort.
+The reasoning document that made the second approach work came directly out of the first attempt's constraint: a keyword list forces you to write "why does this belong here" as an explicit rule, one category at a time. Without that constraint, the document might never have gotten written.
 
 ---
 
 ## 9. The living-reference layer {#living-reference}
 
-This connects directly to why any of this is worth the effort in the first place. Most of what lives in a personal archive is a point-in-time record — filed once, correct forever, never meant to change. A smaller category of document is meant to do the opposite: stay current. That's exactly what the running reference notes described above are for — a summary meant to be trusted as accurate *today*, not as of whenever someone last got around to updating it by hand.
+Most of what lives in a personal archive is a point-in-time record — filed once, correct forever, never meant to change. A smaller category of document is meant to stay current instead. The running reference notes described above are that category — a summary meant to be trusted as accurate *today*.
 
-Keeping something like that current historically meant remembering to sit down and manually re-edit it every few months — the kind of maintenance that quietly stops happening. What's actually running now is closer to the opposite: an agent reads whatever new, structured source material lands in a relevant category and folds it into the note that summarizes it, the same way it's already reading the archive's own rulebook to decide where things belong in the first place. That only works if there's real structured data to read — which is exactly what [the Health Connect → Drive sync project]({% post_url 2026-08-06-health-connect-google-drive-sync-android %}) exists to produce: clean, structured, machine-readable source data landing in exactly the right place in this same archive, instead of one more pile of point-in-time records that nothing ever goes back and reads again.
+Keeping something like that current used to mean remembering to sit down and manually re-edit it every few months, which is exactly the kind of maintenance that quietly stops happening. Now an agent reads whatever new, structured source material lands in a relevant category and folds it into the note that summarizes it, the same way it's already reading the archive's own rulebook to decide where things belong. That needs real structured data to read, which is what [the Health Connect → Drive sync project]({% post_url 2026-08-06-health-connect-google-drive-sync-android %}) exists to produce: clean, structured, machine-readable source data landing in exactly the right place in this same archive, rather than one more pile of point-in-time records nothing goes back and reads again.
 
-One underappreciated payoff of doing all this *inside* Google Drive specifically, rather than some other cloud store used purely as dumb storage: the same well-organized archive ends up queryable in more than one way, for free, because Drive itself is a first-class data source for Google's own AI tooling. The Living Reference notes are one interface — curated, deliberately narrow, current-state summaries with links back to source. But the underlying archive is a second, independent interface on its own: Gemini can be pointed at that same Drive and asked open-ended questions across the full corpus directly, with no separate indexing pipeline or export step to stand up and maintain. Drive's native search and folder browsing is a third, for when a specific file just needs to be found by hand, the ordinary way. None of the three needed extra infrastructure once the archive itself was actually clean — they're each just a different way of asking the same well-organized data a question, and the work that went into making the data clean is exactly what makes all three interfaces trustworthy, not just the one purpose-built for it.
+Building this inside Google Drive specifically, rather than some other cloud store used purely as dumb storage, has one underappreciated payoff: the same well-organized archive ends up queryable three separate ways, because Drive itself is a first-class data source for Google's own AI tooling. The Living Reference notes are one interface — curated, deliberately narrow, current-state summaries with links back to source. The underlying archive is a second, independent interface: Gemini can be pointed at that same Drive and asked open-ended questions across the full corpus directly, with no separate indexing pipeline or export step to stand up and maintain. Drive's native search and folder browsing is a third, for when a specific file just needs to be found by hand. None of the three needed extra infrastructure once the archive itself was clean — the work that went into cleaning the data is what makes all three interfaces trustworthy.
 
 ---
 
@@ -169,4 +167,4 @@ One underappreciated payoff of doing all this *inside* Google Drive specifically
 - A weekly audit that checks the archive's naming and placement *and* a separate layer of running reference notes for two independent kinds of drift — falling behind new source material, and rotting internally from hand-edits — rather than assuming "in sync" and "internally consistent" are the same thing.
 - A `_Core`/reference layer maintained less by remembering to revisit it and more by an agent reading real source material on an ongoing basis, with hard-won rules against the specific failure modes (mismatched labels, transposed digits, misattributed dates) that actually showed up.
 - Three independent ways to ask the same archive a question — curated reference notes, open-ended natural-language search across the whole corpus, and plain file browsing — none of which needed separate infrastructure, because the underlying data was actually clean.
-- A reasoning document that turned out to be the actual deliverable of the "failed" first attempt — proof that the artifact worth keeping from a project isn't always the one the project was nominally building.
+- A reasoning document that turned out to be the actual deliverable of the "failed" first attempt, not the classifier it was built to be.

@@ -8,7 +8,7 @@ Two people in my household wear Samsung devices and use Samsung Health. Samsung 
 
 This describes the Android app I built to fix that: it reads everything Health Connect exposes, aggregates it sensibly, and appends it to a per-person CSV file in Google Drive. No backend server, no third-party service, nothing but the phone and a Drive folder.
 
-- [Why this exists: feeding a living reference, not just a backup](#why-this-exists)
+- [Why this exists: source data for something else](#why-this-exists)
 - [Why Health Connect, not Samsung Health directly](#why-health-connect)
 - [Architecture](#architecture)
 - [Data model: daily aggregation and the sleep-day problem](#data-model)
@@ -17,17 +17,18 @@ This describes the Android app I built to fix that: it reads everything Health C
 - [Dedup, cursors, and retroactive permission grants](#dedup-and-cursors)
 - [Android 14's second permission-rationale requirement](#android-14-manifest)
 - [Running it on two sideloaded phones](#two-phones)
+- [Blood pressure: a hardware limit, a Health Connect wall, and a manual import path](#blood-pressure-import)
 - [End state](#end-state)
 
 ---
 
-## 0. Why this exists: feeding a living reference, not just a backup {#why-this-exists}
+## 0. Why this exists: source data for something else {#why-this-exists}
 
-It would be fair to ask why any of this is worth building instead of just glancing at the Samsung Health app occasionally. The honest answer is that this isn't really a "backup" project — it's a *source data* project.
+It would be fair to ask why any of this is worth building instead of just glancing at the Samsung Health app occasionally. The data is source material for something else, described below.
 
-I keep a structured [personal document archive]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}), organized around a small set of life categories (Health among them), and within each category a `_Core` folder reserved for *living reference* documents — the kind meant to always reflect current understanding, not a single point-in-time snapshot. Historically, keeping something like a health overview genuinely current meant remembering to sit down and rewrite it by hand every few months, which is exactly the kind of maintenance that quietly stops happening.
+I keep a structured [personal document archive]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}), organized around a small set of life categories (Health among them), and within each category a `_Core` folder reserved for *living reference* documents — the kind meant to always reflect current understanding, updated as things change, rather than frozen at whenever someone last wrote them. Keeping something like a health overview genuinely current used to mean remembering to sit down and rewrite it by hand every few months. That's exactly the kind of maintenance that quietly stops happening.
 
-The direction I'm working toward instead: have an AI model read the raw, structured data sitting in the archive and use it to both *analyze* (spot trends, flag things worth a second look) and *keep the `_Core` reference documents themselves up to date* — regenerated from real data instead of remembered impressions. That only works if there's real structured data to read in the first place. A phone's on-device health dashboard doesn't produce that; a folder of screenshots doesn't either. A clean, deduplicated, sensibly-aggregated CSV — landing in exactly the right place in that archive — does. That's what this app is actually for: not a health-tracking hobby project, but the data-collection layer underneath a larger system.
+The direction I'm working toward instead: have an AI model read the raw, structured data sitting in the archive and use it to both *analyze* (spot trends, flag things worth a second look) and *keep the `_Core` reference documents themselves up to date* — regenerated from real data instead of remembered impressions. That only works if there's real structured data to read in the first place. A phone's on-device health dashboard doesn't produce that; a folder of screenshots doesn't either. A clean, deduplicated, sensibly-aggregated CSV, landing in exactly the right place in that archive, does. That's what this app is actually for — the data-collection layer underneath a larger system.
 
 ---
 
@@ -68,7 +69,7 @@ The fix is a metric-by-metric aggregation policy:
 
 - **Additive metrics** (steps, calories, distance, floors climbed...) → summed per day.
 - **Dense sampled metrics** (heart rate, speed, cadence...) → daily min/avg/max, three rows a day instead of hundreds.
-- **Point-in-time metrics** (weight, height, body fat, blood pressure...) → left as-is, unaggregated. There's exactly one meaningful value per reading; collapsing it into a "daily average" would just be lossy for no reason.
+- **Point-in-time metrics** (weight, height, body fat, blood pressure...) → left as-is, unaggregated. There's exactly one meaningful value per reading; collapsing it into a "daily average" would just be lossy for no reason. (Blood pressure didn't start out here — [more on that below](#blood-pressure-import).)
 
 The one wrinkle worth calling out: **a calendar day is the wrong bucket for sleep.** Steps taken between midnight and midnight map cleanly onto "today." A sleep session that starts at 11pm and ends at 7am does not — bucketing it by calendar day either splits one sleep session across two days or arbitrarily assigns it to whichever day it started on, both of which corrupt night-over-night trend data.
 
@@ -89,7 +90,7 @@ A service account is the right tool here: no user-facing login, no refresh-token
 
 Two gotchas that cost real time:
 
-**Service accounts have no storage quota of their own.** `files.create()` against a folder the service account only has *Editor* access to (not ownership) fails with `storageQuotaExceeded` — service accounts can create files only up to their own (zero) quota, full stop. The workaround is boring but reliable: pre-create the empty CSV files yourself, share the folder, and let the app only ever `files.update()` an existing file it never has to "create."
+**Service accounts have no storage quota of their own.** `files.create()` against a folder the service account only has *Editor* access to (not ownership) fails with `storageQuotaExceeded` — service accounts can only create files up to their own (zero) quota. The workaround is boring but reliable: pre-create the empty CSV files yourself, share the folder, and let the app only ever `files.update()` an existing file it never has to "create."
 
 **Dedup has to be data-driven, not timestamp-driven.** Health Connect write sources can backfill *already-passed* timestamps — a source might not get write permission until well after it started collecting data, then dump hours of retroactive history the moment permission is granted. If the sync cursor had already advanced past that window, that backfilled data becomes permanently unreachable, since the cursor never looks backward. Two things fix this together: the cursor only advances when a sync actually finds *something* (an empty result never moves it forward), and every upload is deduped against a synthetic, deterministic `source_record_id` parsed out of the CSV's last column before anything gets appended. That combination means a manual "resync everything from scratch" is always safe to run — nothing above the file's high-water mark can duplicate.
 
@@ -101,7 +102,7 @@ This is the one worth writing down for anyone else scheduling periodic backgroun
 
 The background sync used `PeriodicWorkRequestBuilder(1, DAYS, 1, HOURS)` — a one-day interval with a one-hour flex window, `setInitialDelay()` computed to land on a specific hour, `ExistingPeriodicWorkPolicy.UPDATE` on every app launch so re-opening the app would re-anchor the schedule if the target time ever changed.
 
-On a real device, `dumpsys jobscheduler` showed the job's actual `Minimum latency` landing roughly **23 hours later** than the computed initial delay implied it should. Not random drift — the same offset, reproducible, on two separate phones.
+On a real device, `dumpsys jobscheduler` showed the job's actual `Minimum latency` landing roughly **23 hours later** than the computed initial delay implied it should. Reproducible too: the same offset showed up on two separate phones.
 
 The cause: **`setInitialDelay` on a periodic work request only shifts when the period *starts* — it does not let the first execution skip ahead within that period.** The first run still waits out `(interval − flex)` beyond the initial delay, exactly like every subsequent run does. With a 1-hour flex on a 24-hour interval, that's `initialDelay + 23h` for the very first execution — silently adding almost a full extra day before anything runs the first time.
 
@@ -110,7 +111,7 @@ Two separate fixes were needed:
 1. **`ExistingPeriodicWorkPolicy.UPDATE` doesn't reliably re-anchor** an already-scheduled periodic work to a freshly computed initial delay — confirmed by changing the target hour and watching `UPDATE` leave the old cadence in place. Switched to `CANCEL_AND_REENQUEUE`, which fully removes and reinserts the WorkSpec instead of trying to patch it in place.
 2. **Drop the flex window entirely.** Omitting it makes the effective flex equal to the full interval, so the first run fires right at the initial delay as intended — the OS still has the whole day to batch/optimize the job exactly as it would with any flex value.
 
-Verified with `adb shell dumpsys jobscheduler`, comparing the job's reported `Minimum latency` against `adb shell date` on the actual device — not just reasoning about the API from documentation. The gap between "should work per the docs" and "what the real scheduler does" is exactly why that verification step existed at all.
+Verified with `adb shell dumpsys jobscheduler`, comparing the job's reported `Minimum latency` against `adb shell date` on the actual device, rather than just reasoning about the API from documentation. The docs didn't predict this behavior. Checking real device state did.
 
 ---
 
@@ -143,13 +144,34 @@ No Play Store listing — this is a two-person household tool, sideloaded via a 
 
 ---
 
+## 9. Blood pressure: a hardware limit, a Health Connect wall, and a manual import path {#blood-pressure-import}
+
+This one started as a hardware problem, not a software one. A Bluetooth blood-pressure cuff generally pairs with exactly one phone at a time — fine for one person, not for a two-person household without buying and juggling two separate cuffs (and then keeping track of whose is whose). When it *was* paired, the readings flowed through Health Connect cleanly — genuinely confirmed with real synced data, not assumed. But rather than double the hardware, the better option was the watch's own on-device blood-pressure feature, which only needs the cuff occasionally, for calibration, not for every reading.
+
+That's where it stopped working. The watch's BP readings live in a separate app from the main health-tracking one, and that app's blood-pressure data never reaches Health Connect at all, on any version. Confirmed directly: querying its content provider by hand threw a `SecurityException` demanding a `signature|privileged` permission. No third-party app can ever hold that permission, sideloaded or not — there's no settings toggle to find and no future update that changes it.
+
+**The workaround: make the app a share target.** The BP app does support exporting readings and sharing that export elsewhere — PDF, in the version this was built against (an HTML option existed at some point but wasn't available by the time this got built, so it isn't handled). Registering an `ACTION_SEND` intent-filter for `application/pdf` turns the sync app itself into a destination in the share sheet: export, share, done.
+
+**The PDF parsing gotcha is worth its own paragraph.** The export is small and machine-generated with real embedded text, not a scan, which meant text extraction instead of OCR — genuinely good news, since OCR would have added a misread-digit risk on top of the parsing itself that this data really can't afford. A parser got built and verified against a desktop PDF text-extraction library's output for a real sample export, which laid each reading out as five separate lines. Shipped it, tested on the actual device, got "0 readings found." The on-device PDF library — chosen specifically because it could do real extraction without OCR — laid the *identical file* out completely differently: one line per reading, space-separated fields, no line breaks between them at all. Two different outputs, both correct, for the same PDF. The fix was mechanical once the real structure was in hand: rewrite the pattern, dry-run it against a captured real extraction before touching the build again. This project keeps relearning the same lesson — check the actual library against the actual device, not another library's output on the same file.
+
+**Not a second upload path.** Confirming an import doesn't talk to Drive directly. It stages the parsed rows locally and triggers the same background sync Health Connect data already goes through, which folds both sources into one upload. One place in the app authenticates and writes to Drive. A second path would drift from it eventually.
+
+**The aggregation question got revisited once real data existed to check it against.** Blood pressure started in the same bucket as heart rate — dense, fluctuating, aggregate to daily min/avg/max, a reasonable-looking default made before there was any real data to test it against. Actual exports showed 2-3 deliberate spot readings a day, not hundreds of continuous samples, much closer to a scale weigh-in than a heart-rate stream. It moved to the same point-in-time, one-row-per-reading treatment as weight and height. That also removed a category of complexity: a metric with no daily bucket has no "is today's bucket finished yet" problem to protect against, which the aggregated version needed to handle.
+
+**Every export overlaps the last one, so duplicate handling runs every time, not occasionally.** The BP app's own export options are fixed, overlapping windows (a week, two weeks, a month, three months, year-to-date), so re-exporting routinely re-covers ground already synced. Two layers handle that: each reading's `source_record_id` is derived from its own timestamp, so an already-uploaded reading is skipped automatically, and a second dedup step inside the upload catches what that alone can't — two overlapping *staged but not-yet-synced* imports both producing the same ID within a single upload batch.
+
+One more thing worth naming: an early debug aid wrote the raw parsed report to external storage so it could be pulled and inspected during development. Once it had done its job, it kept getting written anyway — a name, a date of birth, and every reading, sitting on disk with nothing to clean it up. Removed it once that stood out. The on-screen preview already shows what was parsed, and closing the screen should be the end of it.
+
+---
+
 ## End state {#end-state}
 
 - One Android app, two installs, one shared Drive folder.
 - Roughly 30 Health Connect metrics read, aggregated where it matters, left alone where aggregation would lose information.
 - Calendar-day and sleep-day boundaries handled as the genuinely different things they are.
 - A background sync that actually lands when it's supposed to, verified against the real OS scheduler rather than assumed from the API surface.
+- A second data source (a manually-shared PDF export, for the one metric Health Connect structurally can't reach) folding into the same upload path as everything else.
 - Zero servers, zero recurring cost, zero third-party services beyond Drive itself.
-- Clean, structured data landing exactly where [the archive's Health category]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}) expects it — not the end goal by itself, but the raw material the living-reference layer actually needs to be worth building.
+- Clean, structured data landing exactly where [the archive's Health category]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}) expects it — the actual raw material the living-reference layer needs.
 
-The most useful lesson wasn't any single line of code — it was how many of these bugs (the scheduling gap, the flash-closing permission screen, the unreachable backfilled history) were invisible from reading the code or the docs, and only showed up from actually running the thing on real devices and checking real system state (`dumpsys`, `logcat`, the actual Drive file contents) after the fact. Health/scheduling APIs in particular seem to have a wide gap between "what the documentation implies" and "what the OS actually does," and that gap doesn't announce itself.
+Most of these bugs — the scheduling gap, the flash-closing permission screen, the unreachable backfilled history, the PDF layout mismatch — weren't visible from reading code or docs. They only showed up by running the thing on real devices and checking real system state: `dumpsys`, `logcat`, the actual Drive file contents. Health and scheduling APIs on Android have a real gap between what the docs say and what the OS actually does.
