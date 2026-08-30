@@ -4,7 +4,7 @@ title: "Windows + WSL Development Environment (Setup Guide)"
 date: 2025-12-24
 ---
 
-This document describes **exactly** how to reproduce my current personal development environment:
+This is how to reproduce my current development environment:
 
 - [Windows as host OS](#preconditions)
 - [WSL2 (Ubuntu) as the development OS](#wsl2-ubuntu)
@@ -14,7 +14,7 @@ This document describes **exactly** how to reproduce my current personal develop
 - [Git hardened for SSH + GitHub privacy](#git-ssh-github-privacy)
 - [Minimal but powerful CLI tooling](#common-cli-tools)
 
-This is **not** a generic guide. Follow it top-to-bottom for the same result.
+It isn't a generic guide. Follow it top to bottom for the same result.
 
 ---
 
@@ -427,4 +427,4 @@ You now have:
 - SSH-first Git
 - Minimal, professional CLI environment
 
-This setup is intentionally boring — and built to last.
+It's a boring setup, which is the point. It should keep working for years without attention.

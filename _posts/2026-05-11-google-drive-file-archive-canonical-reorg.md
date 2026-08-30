@@ -4,9 +4,9 @@ title: "What Actually Fixed a Decade of Google Drive Sprawl"
 date: 2026-05-11
 ---
 
-A shared household Google Drive accumulates documents for years before anyone looks at it as a system rather than a dumping ground. Mine had two dozen top-level folders, several of them near-duplicates of each other (a typo'd second category next to the real one, two folders that meant almost the same thing under different names), plus a scattering of one-off folders sitting at the same level as major life categories. No consistent convention for whose document something was, whether it was shared, or whether it was a stable reference versus a one-time record.
+A shared household Google Drive accumulates documents for years before anyone treats it as a system rather than a dumping ground. Mine had two dozen top-level folders, several of them near-duplicates: a typo'd second category next to the real one, two folders that meant almost the same thing under different names, plus a scattering of one-off folders sitting at the same level as major life categories. No convention for whose document something was, whether it was shared, or whether it was a stable reference or a one-time record.
 
-This is the story of fixing that, including how the first approach failed at the one part that actually mattered, and what it produced along the way that made the second approach work.
+This is the story of fixing that: how the first approach failed at the part that mattered most, and what it produced along the way that made the second approach work.
 
 - [The starting mess](#starting-mess)
 - [Attempt one: a scripted, rules-based pipeline](#attempt-one)
@@ -24,9 +24,9 @@ This is the story of fixing that, including how the first approach failed at the
 
 ## 0. The starting mess {#starting-mess}
 
-A read-only audit script walked the archive and produced a blunt table: folder name, subfolder count, file count. The top of that table told the whole story — near-duplicate category names differing only by a typo or a synonym, several single-digit-file folders that existed only because something needed *somewhere* to go at the time, and no folder anywhere indicating whose document it was or whether it was shared.
+A read-only audit script walked the archive and produced a blunt table: folder name, subfolder count, file count. The top of that table told the story — near-duplicate category names differing only by a typo or a synonym, several folders with a handful of files each that existed only because something needed somewhere to go at the time, and nothing anywhere indicating whose document it was or whether it was shared.
 
-None of that is unusual. It's what any shared drive looks like after years of ad hoc "just put it somewhere for now." Without something to return to, it doesn't undo itself.
+None of that is unusual. It's what any shared drive looks like after years of "just put it somewhere for now," and it doesn't sort itself out.
 
 ---
 
@@ -45,9 +45,9 @@ Some of that held up well and is worth keeping regardless of what does the class
 
 ## 2. Where the script hit its ceiling {#the-ceiling}
 
-What the script couldn't do was hold a *reason*, only a keyword. Real placement rules look like "if it proves who you are, it belongs here regardless of who issued it" or "if a doctor would care about it, it belongs in Health" or "this specific abbreviation looks like it belongs in one category but is explicitly excluded because of how a particular process actually works." Those are judgment calls, not string matches — and every one of them eventually showed up as a real misfile that had to get caught by hand and turned into yet another keyword-list exception, in a rule list that only ever grew, never simplified.
+What the script couldn't do was hold a reason, only a keyword. Real placement rules look like "if it proves who you are, it belongs here regardless of who issued it," or "if a doctor would care about it, it belongs in Health," or "this abbreviation looks like it belongs in one category but is excluded because of how a particular process works." Those are judgment calls rather than string matches, and each one eventually showed up as a misfile that had to be caught by hand and turned into another keyword-list exception, in a rule list that only grew.
 
-That ceiling is why the real output of that first project was a document, not a script: writing down every one of those "if X, then Y, because Z" rules — in prose, in one place, as the actual reasoning rather than a keyword fragment — turned out to be far more valuable than the code that (imperfectly) tried to enforce it. Calling the scripted pipeline "a failure" isn't quite fair — it did the dedup, the shortcut hygiene, and the plan/apply safety rails correctly, and those pieces are still true today. But as a *classifier*, it plateaued well below what the archive actually needed, and the document it forced into existence turned out to matter more than the classifier itself.
+That ceiling is why the first project's main output was a document, not a script. Writing down every "if X, then Y, because Z" rule in prose, in one place, as the reasoning rather than a keyword fragment, was worth more than the code that tried to enforce it. Calling the pipeline a failure isn't quite fair — it did the dedup, the shortcut hygiene, and the plan/apply safety rails correctly, and those still hold. But as a classifier it plateaued well below what the archive needed, and the document it forced into existence outlasted it.
 
 ---
 
@@ -58,21 +58,21 @@ The fix replaced the keyword list with something that can actually *read*: two n
 - **A filer**, triggered by anything that looks like filing work — a specific file pointed at, a batch of downloads to sort, someone just asking "where does this go?" It reads a file's actual content, decides what it is, and derives the correct name and location from the rulebook.
 - **An auditor**, triggered by review requests ("are my files organized?", "anything out of place?") and also run proactively on a weekly schedule regardless of whether anyone asks. It sweeps the archive for naming/placement/duplicate violations and classifies each finding into "fix it automatically," "hand off to the filer," or "ask the user" — never all the way to silent judgment calls.
 
-Both skills open with the same hard requirement: read the rulebook first, every run, and refuse to proceed at all if it's missing — never fall back to memory or convention. That single constraint is doing a lot of work. It's the difference between a rule document a person occasionally consults and one an agent is required to reload fresh every session, which matters specifically because an agent has no durable memory of last week's edge-case decision unless something outside it holds that decision in writing.
+Both skills open with the same requirement: read the rulebook first, every run, and refuse to proceed if it's missing. Never fall back to memory or convention. That constraint carries a lot of weight. It's the difference between a rule document a person consults now and then and one an agent reloads fresh every session, which matters because an agent has no memory of last week's edge-case decision unless something outside it holds that decision in writing.
 
 ---
 
 ## 4. How the filer actually reads a file {#reading-a-file}
 
-This is where "an agent instead of a script" stops being an abstract upgrade and turns into something concretely more capable.
+This is where "an agent instead of a script" turns from an abstract upgrade into a concrete one.
 
-Identifying a document means reading it, and real-world scans are messy. The filer's fallback chain handles that head-on rather than giving up:
+Identifying a document means reading it, and real-world scans are messy. The filer's fallback chain handles that rather than giving up:
 
 1. Extract embedded text directly, when the file has any.
 2. If that comes back empty — a scanned, image-only PDF — run OCR against just the first couple of pages. Deliberately not the whole document: identifying what something is and who it's about doesn't need every page, and burning that cost on the full file for every scan adds up fast.
 3. If the OCR text itself comes back garbled — which happens more with some scripts and fonts than others — fall back one level further and actually look at the extracted page image directly instead of trusting the unreliable text. A slightly-rotated or mirrored scanner export gets corrected before that final look, rather than just accepted as unreadable.
 
-Only once genuinely nothing can be extracted — an encrypted file, a truly unreadable scan even after all of that — does it stop and ask, rather than guessing. That three-tier fallback, ending in "look at the actual page before giving up," is not something a keyword-matching script could approximate at all; it needs something that can read.
+Only when nothing can be extracted — an encrypted file, an unreadable scan even after all of that — does it stop and ask instead of guessing. That three-tier fallback, ending in "look at the page before giving up," is not something a keyword-matching script could approximate.
 
 From there the naming itself follows the rulebook directly: a date prefix (only if a date can actually be confidently determined from the content — never invented), a descriptive body specific enough to identify the document without opening it, consistent handling of acronyms and institution names, the original extension preserved.
 
@@ -80,9 +80,9 @@ From there the naming itself follows the rulebook directly: a date prefix (only 
 
 ## 5. The automation boundary: when to just do it vs. when to ask {#automation-boundary}
 
-Where a file currently sits changes how much autonomy the filer has, and the reasoning behind that split is worth stating plainly: a file's *current* location is itself information. Something sitting in an inbox-style holding folder is, by definition, not yet a deliberate choice — so the filer renames and moves it outright, no confirmation needed, and only stops to ask if the content genuinely can't be identified at all.
+Where a file currently sits changes how much autonomy the filer has, and the reason is simple: a file's current location is itself information. Something in an inbox-style holding folder isn't a deliberate choice yet, so the filer renames and moves it outright, no confirmation, and only stops to ask if the content can't be identified at all.
 
-A file already sitting inside a real category folder is a different situation — someone put it there on purpose, even if the name is wrong, so moving it always gets proposed and confirmed rather than applied silently. Even a same-folder rename gets a narrower check before it's allowed to run automatically: does the new name change what the file *appears* to be about — who it belongs to, what type of document it is, what it's for? A pure formatting fix (casing, spacing, date format) goes through without asking. Anything that shifts apparent ownership or purpose gets presented as a proposal with the specific reasoning attached, because a name like that might have been chosen deliberately, and guessing wrong there is a worse failure than just asking.
+A file already inside a real category folder is different. Someone put it there on purpose, even if the name is wrong, so moving it always gets proposed and confirmed rather than applied silently. Even a same-folder rename gets a check first: does the new name change what the file appears to be about — who it belongs to, what type of document it is, what it's for? A pure formatting fix (casing, spacing, date format) goes through without asking. Anything that shifts apparent ownership or purpose comes back as a proposal with the reasoning attached, because that name might have been chosen deliberately, and guessing wrong is worse than asking.
 
 The same instinct shows up in the auditor's own triage: fix silently only when it's mechanical and reasoning-free, hand off anything content-dependent to the filer, and ask the user for anything that requires guessing intent — including a flat rule to never silently repoint a broken cross-reference, never invent a missing piece of metadata, and never reorder or merge content without a human confirming the guess first.
 
@@ -102,7 +102,7 @@ A few operational choices behind this layer are worth calling out on their own, 
 
 - **A stale note is worse than no note**, because it looks authoritative right up until it's wrong. Every note tracks exactly which source files were actually read to produce it — and, just as importantly, which visible-but-unread files were skipped — so "trust this" is always checkable against a concrete list, not just an implicit claim.
 - **Data sensitivity, residency, and access control are worth deciding deliberately, up front, rather than defaulting into.** A note-taking layer like this tends to outlive its first storage/sync choice, and a later change to that setup can silently move where sensitive content actually lives and who/what can reach it. Whoever's building this should settle that policy for their own situation before the notes exist, not after.
-- **There's no API for "edit this note in place" the way there is for moving a Drive file.** An agent can read source material and draft an updated note, but landing that draft still needs either a live local connection to wherever the notes actually live, or a manual step through the archive's own version history. Automating the extraction and the drafting is most of the value — but it's worth being explicit about where the automation boundary actually ends, rather than implying the whole loop closes itself.
+- **There's no API for "edit this note in place" the way there is for moving a Drive file.** An agent can read source material and draft an updated note, but landing that draft still needs a live local connection to wherever the notes live, or a manual step through the archive's version history. Automating the extraction and the drafting is most of the value, but it's worth being clear about where the automation stops instead of implying the whole loop closes itself.
 - **Plain links back to the source document, not an embedded copy.** Slightly more friction to open a source file from a note, in exchange for zero extra sync infrastructure and something that works identically from any device. A small tradeoff, made deliberately rather than defaulted into.
 
 ---
@@ -143,7 +143,7 @@ It ends with a line that's stuck with me past this one project: *clever systems 
 
 ## 8. What carried over from the first attempt {#the-lesson}
 
-It's tempting to write off the first attempt once the second one clearly works better. The operational discipline the script enforced — plan before you apply, quarantine before you delete, log every action, never let the thing doing the classifying also be the thing with write access — still matters with an agent in place of the classifier. An agent making placement judgment calls needs those guardrails at least as much as a keyword matcher did, arguably more. The ask-vs-auto boundary from the automation-boundary section above is the same instinct, applied to a different kind of decision-maker.
+It's easy to write off the first attempt once the second one works better. But the discipline the script enforced — plan before you apply, quarantine before you delete, log every action, never let the thing doing the classifying also hold write access — still matters with an agent in the classifier's place. An agent making placement judgment calls needs those guardrails as much as a keyword matcher did, probably more. The ask-vs-auto boundary above is the same instinct pointed at a different kind of decision-maker.
 
 The reasoning document that made the second approach work came directly out of the first attempt's constraint: a keyword list forces you to write "why does this belong here" as an explicit rule, one category at a time. Without that constraint, the document might never have gotten written.
 
@@ -155,7 +155,7 @@ Most of what lives in a personal archive is a point-in-time record — filed onc
 
 Keeping something like that current used to mean remembering to sit down and manually re-edit it every few months, which is exactly the kind of maintenance that quietly stops happening. Now an agent reads whatever new, structured source material lands in a relevant category and folds it into the note that summarizes it, the same way it's already reading the archive's own rulebook to decide where things belong. That needs real structured data to read, which is what [the Health Connect → Drive sync project]({% post_url 2026-08-06-health-connect-google-drive-sync-android %}) exists to produce: clean, structured, machine-readable source data landing in exactly the right place in this same archive, rather than one more pile of point-in-time records nothing goes back and reads again.
 
-Building this inside Google Drive specifically, rather than some other cloud store used purely as dumb storage, has one underappreciated payoff: the same well-organized archive ends up queryable three separate ways, because Drive itself is a first-class data source for Google's own AI tooling. The Living Reference notes are one interface — curated, deliberately narrow, current-state summaries with links back to source. The underlying archive is a second, independent interface: Gemini can be pointed at that same Drive and asked open-ended questions across the full corpus directly, with no separate indexing pipeline or export step to stand up and maintain. Drive's native search and folder browsing is a third, for when a specific file just needs to be found by hand. None of the three needed extra infrastructure once the archive itself was clean — the work that went into cleaning the data is what makes all three interfaces trustworthy.
+Building this inside Google Drive, rather than some other cloud store used as dumb storage, has a payoff that's easy to miss: the same organized archive ends up queryable three ways, because Drive is a first-class data source for Google's own AI tooling. The Living Reference notes are one interface — curated, narrow, current-state summaries with links back to source. The archive itself is a second: Gemini can be pointed at that same Drive and asked open-ended questions across the whole corpus, with no separate indexing pipeline or export step to maintain. Drive's own search and folder browsing is a third, for when a file just needs to be found by hand. None of the three needed extra infrastructure once the archive was clean, and the work that went into cleaning the data is what makes all three trustworthy.
 
 ---
 
@@ -166,5 +166,5 @@ Building this inside Google Drive specifically, rather than some other cloud sto
 - A sharp automation boundary: act freely on genuinely unfiled material and purely cosmetic fixes, always propose and confirm anything that could change what a file appears to mean.
 - A weekly audit that checks the archive's naming and placement *and* a separate layer of running reference notes for two independent kinds of drift — falling behind new source material, and rotting internally from hand-edits — rather than assuming "in sync" and "internally consistent" are the same thing.
 - A `_Core`/reference layer maintained less by remembering to revisit it and more by an agent reading real source material on an ongoing basis, with hard-won rules against the specific failure modes (mismatched labels, transposed digits, misattributed dates) that actually showed up.
-- Three independent ways to ask the same archive a question — curated reference notes, open-ended natural-language search across the whole corpus, and plain file browsing — none of which needed separate infrastructure, because the underlying data was actually clean.
+- Three independent ways to ask the same archive a question — curated reference notes, open-ended natural-language search across the whole corpus, and plain file browsing — none of which needed separate infrastructure, because the underlying data was clean.
 - A reasoning document that turned out to be the actual deliverable of the "failed" first attempt, not the classifier it was built to be.
