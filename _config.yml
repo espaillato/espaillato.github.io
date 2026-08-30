@@ -1,15 +1,22 @@
-title: espaillato.github.io
-description: Use github as bloging platform
-google_analytics: 
-show_downloads: true
-theme: jekyll-theme-architect
-future: true
+title: Field Notes
+tagline: Working notes on building small, durable personal systems.
+description: Working notes on building small, durable personal systems — documents, health data, money, and the infrastructure that decays if nobody tends it.
+url: https://www.unwiredsolutions.com
+linkedin: https://www.linkedin.com/in/ozzye/
 
-gems:
-  - jekyll-mentions
+future: true
+permalink: /:title/
 
 markdown: kramdown
 highlighter: rouge
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+exclude:
+  - post_template.md
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - LICENSE

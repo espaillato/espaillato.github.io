@@ -1,0 +1,29 @@
+---
+layout: default
+---
+<h1 class="visually-hidden">{{ site.title }}</h1>
+
+<section class="intro">
+  <p class="lede">I build small, durable systems for the unglamorous parts of life &mdash; documents, health data, money &mdash; the kind of infrastructure that decays if nobody tends it. These are working notes on how they&rsquo;re put together: what broke, what held, and what I&rsquo;d do again.</p>
+</section>
+
+<section class="archive" aria-label="All posts">
+  {%- assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+  {%- for year in posts_by_year %}
+  <div class="year-group">
+    <h2 class="year">{{ year.name }}</h2>
+    <ul class="post-list">
+      {%- for post in year.items %}
+      <li class="post-item">
+        <a href="{{ post.url | relative_url }}">
+          <span class="post-item-title">{{ post.title }}</span>
+          <span class="post-item-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time></span>
+        </a>
+        {%- assign blurb = post.description | default: post.excerpt | strip_html | strip_newlines | truncatewords: 32 %}
+        <p class="post-item-excerpt">{{ blurb }}</p>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+  {%- endfor %}
+</section>
