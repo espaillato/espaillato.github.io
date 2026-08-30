@@ -4,7 +4,7 @@ layout: default
 <h1 class="visually-hidden">{{ site.title }}</h1>
 
 <section class="intro">
-  <p class="lede">I build small, durable systems for the unglamorous parts of life &mdash; documents, health data, money &mdash; the kind of infrastructure that decays if nobody tends it. These are working notes on how they&rsquo;re put together: what broke, what held, and what I&rsquo;d do again.</p>
+  <p class="lede">I&rsquo;ve spent two decades on financial systems &mdash; the kind that move money securely, process millions of transactions, and have to stay stable when traffic spikes. This site is for the smaller systems I build on my own time: personal automation, data pipelines, tools around the house. Different scale, same priorities &mdash; make it work when it&rsquo;s needed, and keep it working as things change around it.</p>
 </section>
 
 <section class="archive" aria-label="All posts">
@@ -15,12 +15,20 @@ layout: default
     <ul class="post-list">
       {%- for post in year.items %}
       <li class="post-item">
-        <a href="{{ post.url | relative_url }}">
-          <span class="post-item-title">{{ post.title }}</span>
-          <span class="post-item-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time></span>
+        <div class="post-item-text">
+          <a class="post-item-link" href="{{ post.url | relative_url }}">
+            <span class="post-item-title">{{ post.title }}</span>
+          </a>
+          {%- assign blurb = post.description | default: post.excerpt | strip_html | strip_newlines | truncatewords: 34 %}
+          <p class="post-item-excerpt">{{ blurb }}</p>
+          <p class="post-item-meta">
+            {%- if post.topic %}<span>{{ post.topic }}</span><span class="dot" aria-hidden="true">·</span>{% endif %}
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+          </p>
+        </div>
+        <a class="post-item-thumb" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true">
+          {%- include cover-media.html post=post variant="thumb" -%}
         </a>
-        {%- assign blurb = post.description | default: post.excerpt | strip_html | strip_newlines | truncatewords: 32 %}
-        <p class="post-item-excerpt">{{ blurb }}</p>
       </li>
       {%- endfor %}
     </ul>

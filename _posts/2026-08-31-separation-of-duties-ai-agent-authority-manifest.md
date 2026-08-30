@@ -2,6 +2,8 @@
 layout: post
 title: "Separation of Duties: Making Parallel Agents Behave Like a Team"
 date: 2026-08-31
+topic: "Agent systems"
+cover: partition
 ---
 
 [The previous post]({% post_url 2026-08-29-recurring-review-council-async-flag-protocol %}) split one generalist sweep into several narrower agents, each with its own scope, talking to each other through a shared inline-flag protocol. That solved coordination: agents could leave each other messages across a scheduling gap without me relaying them. It didn't solve the problem underneath. Running several agents in parallel is not the same as having several accountable specialists. Without something more explicit, they collapse back into one authority that happens to run in more than one process.

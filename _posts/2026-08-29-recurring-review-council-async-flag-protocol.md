@@ -2,6 +2,8 @@
 layout: post
 title: "From One Auditor to a Council of Specialists"
 date: 2026-08-29
+topic: "Agent systems"
+cover: nodes
 ---
 
 The [archive-reorg post]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}) described a weekly auditor: one skill that swept my document archive and the reference notes layered on top of it, fixed the mechanical problems, and flagged the rest for me. That was enough while "the rest" meant judgment calls about naming and placement. It stopped being enough once the reference notes grew past a single domain. The questions changed from "is this filed correctly" to "does this financial strategy still make sense," "does this estate plan still cover what it was written to cover," "does this reading of a lab result still hold up." Those need a specialist, not a librarian.

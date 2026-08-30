@@ -1,0 +1,43 @@
+{%- comment -%}
+Generative cover motif. Params:
+  motif   — grid | strata | flow | orbit | nodes | partition
+  variant — "chip" (square, on listings) or omitted (wide banner, on a post)
+Pure SVG, no external assets; colours come from the stylesheet's theme vars.
+{%- endcomment -%}
+{%- assign m = include.motif | default: "strata" -%}
+{%- if include.variant == "thumb" -%}{%- assign cls = "cover cover-thumb" -%}
+{%- elsif include.variant == "chip" -%}{%- assign cls = "cover cover-chip" -%}
+{%- else -%}{%- assign cls = "cover post-cover" -%}{%- endif -%}
+<svg class="{{ cls }}" viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+{%- case m -%}
+{%- when "grid" -%}
+<g class="c-soft" stroke-width="1.5"><path d="M40 4V116 M80 4V116 M120 4V116 M160 4V116 M200 4V116 M240 4V116 M280 4V116"/><path d="M4 40H316 M4 80H316"/></g>
+<rect class="c-fill" x="40" y="0" width="40" height="40" rx="2"/>
+<rect class="c-fill" x="200" y="40" width="40" height="40" rx="2"/>
+<rect class="c-accent-fill" x="120" y="40" width="40" height="40" rx="2"/>
+<rect class="c-fill" x="240" y="80" width="40" height="40" rx="2"/>
+{%- when "flow" -%}
+<g class="c-line" stroke-width="2"><path d="M0 26 C60 4,100 48,160 26 S260 4,320 26"/><path d="M0 94 C60 72,100 116,160 94 S260 72,320 94"/></g>
+<path class="c-accent" stroke-width="2.5" d="M0 60 C60 38,100 82,160 60 S260 38,320 60"/>
+<circle class="c-accent-fill" cx="160" cy="60" r="4.5"/>
+{%- when "orbit" -%}
+<g class="c-line" stroke-width="1.5"><circle cx="160" cy="60" r="14"/><circle cx="160" cy="60" r="30"/><circle cx="160" cy="60" r="46"/></g>
+<circle class="c-accent" cx="160" cy="60" r="30" stroke-width="2.5" stroke-dasharray="3 6"/>
+<circle class="c-accent-fill" cx="190" cy="60" r="5"/>
+<circle class="c-dot" cx="160" cy="14" r="3"/><circle class="c-dot" cx="126" cy="84" r="2.5"/>
+{%- when "nodes" -%}
+<g class="c-line" stroke-width="1.5"><path d="M50 30 150 70 M150 70 110 102 M150 70 250 40 M250 40 282 90 M50 30 90 92 M90 92 150 70"/></g>
+<g class="c-dot"><circle cx="50" cy="30" r="4"/><circle cx="110" cy="102" r="4"/><circle cx="250" cy="40" r="4"/><circle cx="282" cy="90" r="3.5"/><circle cx="90" cy="92" r="3.5"/></g>
+<circle class="c-accent-fill" cx="150" cy="70" r="6.5"/>
+{%- when "partition" -%}
+<rect class="c-line" x="6" y="10" width="308" height="100" rx="4" stroke-width="1.5"/>
+<path class="c-line" d="M130 10V110 M220 10V110" stroke-width="1.5"/>
+<rect class="c-zone" x="130" y="10" width="90" height="100"/>
+<g class="c-dot"><circle cx="45" cy="60" r="3"/><circle cx="75" cy="60" r="3"/><circle cx="105" cy="60" r="3"/></g>
+<path class="c-accent" d="M158 60 l11 12 l22 -28" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="c-line" d="M244 48h44 M244 60h44 M244 72h30" stroke-width="3" stroke-linecap="round"/>
+{%- else -%}
+<g class="c-band"><rect x="0" y="12" width="300" height="10" rx="2"/><rect x="0" y="30" width="264" height="10" rx="2"/><rect x="0" y="66" width="284" height="10" rx="2"/><rect x="0" y="84" width="248" height="10" rx="2"/><rect x="0" y="102" width="300" height="10" rx="2"/></g>
+<rect class="c-accent-fill" x="0" y="48" width="228" height="10" rx="2"/>
+{%- endcase -%}
+</svg>

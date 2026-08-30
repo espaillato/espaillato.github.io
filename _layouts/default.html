@@ -31,10 +31,7 @@
 <header class="site-header">
   <div class="bar">
     <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}, home">
-      <svg class="mark" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
-        <rect x="3.25" y="3.25" width="12.5" height="12.5" rx="2.5"/>
-        <rect x="8.25" y="8.25" width="12.5" height="12.5" rx="2.5" class="mark-inner"/>
-      </svg>
+      {%- include mark.html -%}
       <span class="brand-name">{{ site.title }}</span>
     </a>
     <nav class="site-nav" aria-label="External links">

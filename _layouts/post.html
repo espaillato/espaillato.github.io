@@ -7,6 +7,7 @@ layout: default
 
 <article class="post h-entry">
   <header class="post-header">
+    {%- if page.topic %}<p class="post-kicker">{{ page.topic }}</p>{% endif %}
     <h1 class="post-title p-name">{{ page.title }}</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
@@ -14,6 +15,13 @@ layout: default
       <span>{{ rt }} min read</span>
     </p>
   </header>
+
+  {%- if page.image or page.cover %}
+  <figure class="post-hero">
+    {%- include cover-media.html post=page -%}
+    {%- if page.image_credit %}<figcaption>{{ page.image_credit }}</figcaption>{% endif %}
+  </figure>
+  {%- endif %}
 
   <div class="post-body e-content">
     {{ content }}

@@ -2,6 +2,8 @@
 layout: post
 title: "Windows + WSL Development Environment (Setup Guide)"
 date: 2025-12-24
+topic: "Tooling"
+cover: grid
 ---
 
 This is how to reproduce my current development environment:
