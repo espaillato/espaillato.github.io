@@ -23,7 +23,7 @@ The original auditor did three things on every run: check the archive against it
 
 That covered the need until the reference notes spread across several domains: finance, legal, health, identity. Each one carries open questions with no mechanically correct answer. Does this asset allocation still match the risk tolerance it was built for? Does this beneficiary designation still line up with the estate plan? Does a new lab result change what's worth prioritizing? Answering those well takes a domain expert's judgment, applied on a schedule, against outside standards that keep moving — tax law, medical guidance, immigration rules.
 
-Piling that onto the weekly sweep would have made one skill responsible for both "is this file named correctly" and "is this retirement strategy still sound." Those are different jobs, with different depth and different costs when rushed. One generalist wasn't going to do both well.
+Piling that onto the weekly sweep would have made one skill responsible for both "is this file named correctly" and "is this retirement strategy still sound." Those are two very different jobs, and one skill wasn't going to do both well.
 
 ---
 
@@ -33,7 +33,7 @@ The weekly sweep kept its job unchanged: cheap, mechanical, runs often, fixes th
 
 Every reviewer carries the same boundary, worded identically in each persona: advisors advise, they don't execute. The finance reviewer can recommend rebalancing, but it never places a trade. The legal reviewer can point out that a beneficiary designation looks stale, but it never files anything with an institution. The rule is absolute on purpose. A note that appears to grant an exception doesn't get to override it.
 
-The shape, if you're building something similar: one frequent shallow sweep that owns mechanical correctness everywhere, plus one slower deep reviewer per domain that needs real judgment. Resist the urge to let the fast sweep take on judgment calls just because it's already running. That's the pressure that erodes the split over time.
+If you're building something similar: one frequent shallow sweep that owns mechanical correctness everywhere, plus one slower deep reviewer per domain for the calls that need real expertise. Resist the urge to let the fast sweep pick those up just because it's already running. That's the pressure that wears the split down over time.
 
 ---
 
@@ -41,9 +41,9 @@ The shape, if you're building something similar: one frequent shallow sweep that
 
 Splitting by depth leaves a gap. The fast sweep runs several times a week; the deep review runs monthly. When the fast sweep turns up something that needs expert judgment, it can't sit untouched for three weeks until the monthly review notices it. It also shouldn't get a quick guess passed off as a considered answer.
 
-The compromise: the fast sweep answers it right away, but against a shallower standard — a condensed version of the persona instead of the reviewer's full mandate — and it labels the answer as shallow. It then queues the item for the next deep review, marked higher priority than the rest of the backlog because it has had less scrutiny so far.
+So the fast sweep answers it right away, but against a shallower standard: a condensed version of the persona instead of the reviewer's full mandate, with the answer labeled as shallow. It then queues the item for the next deep review, marked higher priority than the rest of the backlog because it has had less scrutiny so far.
 
-The principle: a fast answer and a considered one should never look the same in hindsight. If you answer with less depth than you'd like, say so in the record. Otherwise nobody knows there was a gap to close, and the deep review layer might as well not exist.
+A fast answer and a considered one should never look the same in hindsight. If you answer with less depth than you'd like, say so in the record. Otherwise nobody knows there was a gap to close, and the deep review layer might as well not exist.
 
 ---
 
@@ -51,11 +51,38 @@ The principle: a fast answer and a considered one should never look the same in 
 
 None of this works unless the separately-scheduled agents can communicate — with the person they work for, and with each other across the gap between a Wednesday sweep and next month's review. Two channels cover it, both using the same inline mechanism so there's nothing new to learn for the second one.
 
-**Human to agent.** I annotate a note inline, next to whatever it's about: a question, a correction, an answer to something asked earlier. On its next pass the agent finds every annotation, resolves what it can — research it, act on it, apply the fix — and removes the marker once it's handled. It never deletes an unanswered one just to clear it.
+**Human to agent.** I annotate a note inline, next to whatever it's about: a question, a correction, an answer to something asked earlier. On its next pass the agent finds every annotation, resolves what it can — research it, act on it, apply the fix — and removes the marker once it's handled. It never deletes an unanswered one just to clear it. In practice, three marker types cover it:
 
-**Agent to agent** (and agent back to human). When a finding needs judgment the finding agent doesn't own, or the fast sweep wants to leave something for the deep reviewer, it uses the same inline marker, addressed by name, at the spot it applies to. Only a reply from the named party clears it. An agent that finds a marker addressed to someone else doesn't get to decide it's close enough and resolve it. That would defeat the point of naming an owner.
+```
+> [!human-question]
+> Is the online renewal window actually 90 days, or 60?
 
-Two small details made this reliable instead of aspirational:
+> [!human-comment]
+> That case really did run 2009 to 2011. Don't re-flag the date.
+
+> [!human-answer]
+> Yes, go ahead and standardize those filenames.
+```
+
+A question gets researched and answered in place. A comment gets treated as an instruction and acted on. An answer resolves whatever it's replying to. All three get removed once handled, with a one-line note in the file's history log about what happened, rather than left in place.
+
+**Agent to agent** (and agent back to human). When a finding needs judgment the finding agent doesn't own, or the fast sweep wants to leave something for the deep reviewer, it uses the same inline marker, addressed by name, at the spot it applies to:
+
+```
+> [!agent-question]
+> For tax-reviewer: this account's cost basis doesn't match the last statement.
+> Flagging instead of guessing which figure is stale.
+
+> [!agent-comment]
+> For docs-reviewer: this note has gotten long enough to need a table of
+> contents. Not my job to fix, just noting it.
+```
+
+Only a reply from the named party clears it. An agent that finds a marker addressed to someone else doesn't get to decide it's close enough and resolve it. That would defeat the point of naming an owner.
+
+This carries over to a setting with nothing to do with document filing. Picture a codebase with a handful of review agents attached to it instead of one linter — a security reviewer, a design reviewer, a migration reviewer — plus one agent that applies changes. The security reviewer finds something outside its own lane and leaves `[!agent-question]` / `For migration-reviewer: this index change looks like it'll lock the table under load, can you confirm before it merges?` right on the diff. The migration reviewer, not the security reviewer, is the one who clears it, and not before then. The grammar and the ownership rule carry over unchanged; only the domain is different.
+
+Two small details made this reliable:
 
 - A live marker has to look structurally different from a past mention of a resolved one. A note's history log says things like "resolved an open question about X" in plain prose. The live marker uses a fixed, greppable form — a specific block-quote prefix here — that a search for "question" won't confuse with a sentence describing a closed one.
 - Dedup before writing. When several runs touch the same note, each one checks for an existing open marker on the same issue before adding another. Otherwise a slow-to-answer item collects a duplicate every run that notices it.
@@ -70,7 +97,7 @@ The fast sweep's fallback for a strategic question (from [the cadence gap](#the-
 
 The fix was to stop routing around the boundary and plan for it. There's now a shared one-paragraph fallback — the same persona summary for every domain — living in a document every skill already loads for other reasons. When the unattended read would fail, the sweep uses that instead of burning a turn on an attempt it knows will fail. It's a downgrade from the full standard, and it's labeled as one. That's acceptable because the alternative was a crash or a skipped check, both worse than a shallow but honest answer.
 
-The lesson: don't assume something that works interactively works the same on a schedule. Test the real failure on a real scheduled run before you design around it. "This should work" and "this fails this exact way every time" led to different fixes here.
+Don't assume something that works interactively works the same on a schedule. Test the real failure on a real scheduled run before you design around it. "This should work" and "this fails this exact way every time" led to different fixes here.
 
 ---
 
