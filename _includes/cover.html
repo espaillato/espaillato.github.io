@@ -1,6 +1,6 @@
 {%- comment -%}
 Generative cover motif. Params:
-  motif   — grid | strata | flow | orbit | nodes | partition
+  motif   — grid | strata | flow | orbit | nodes | partition | panel
   variant — "chip" (square, on listings) or omitted (wide banner, on a post)
 Pure SVG, no external assets; colours come from the stylesheet's theme vars.
 {%- endcomment -%}
@@ -36,6 +36,15 @@ Pure SVG, no external assets; colours come from the stylesheet's theme vars.
 <g class="c-dot"><circle cx="45" cy="60" r="3"/><circle cx="75" cy="60" r="3"/><circle cx="105" cy="60" r="3"/></g>
 <path class="c-accent" d="M158 60 l11 12 l22 -28" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="c-line" d="M244 48h44 M244 60h44 M244 72h30" stroke-width="3" stroke-linecap="round"/>
+{%- when "panel" -%}
+<rect class="c-line" x="92" y="10" width="136" height="46" rx="7" stroke-width="1.5"/>
+<path class="c-soft" d="M104 24h64 M104 34h48" stroke-width="2"/>
+<path class="c-accent" d="M104 44h34" stroke-width="2.5"/>
+<circle class="c-accent-fill" cx="214" cy="20" r="4"/>
+<path class="c-soft" d="M160 56V72" stroke-width="1.5" stroke-dasharray="2 4"/>
+<circle class="c-dot" cx="160" cy="76" r="2.5"/>
+<g class="c-band"><rect x="46" y="86" width="150" height="8" rx="2"/><rect x="46" y="98" width="228" height="8" rx="2"/><rect x="46" y="110" width="196" height="8" rx="2"/></g>
+<path class="c-soft" d="M120 86 L104 56" stroke-width="1.3" stroke-dasharray="2 4"/>
 {%- else -%}
 <g class="c-band"><rect x="0" y="12" width="300" height="10" rx="2"/><rect x="0" y="30" width="264" height="10" rx="2"/><rect x="0" y="66" width="284" height="10" rx="2"/><rect x="0" y="84" width="248" height="10" rx="2"/><rect x="0" y="102" width="300" height="10" rx="2"/></g>
 <rect class="c-accent-fill" x="0" y="48" width="228" height="10" rx="2"/>

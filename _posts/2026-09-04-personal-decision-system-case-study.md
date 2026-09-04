@@ -3,7 +3,7 @@ layout: post
 title: "A Personal Decision System Built on Top of a Document Archive"
 date: 2026-09-04
 topic: "Personal systems"
-cover: grid
+cover: panel
 ---
 
 The archive described in [an earlier post]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}) solved a filing problem. Documents had stable names, a small set of categories, and explicit rules for the cases that did not fit neatly. That made the archive easier to maintain and search, but it was still an archive: useful when I knew what to look for, less useful when the question was what deserved attention now.
