@@ -3,7 +3,8 @@ layout: post
 title: "Turning a Health Chart Into an Actual Plan, and Keeping It Current"
 date: 2026-08-10
 topic: "Health data"
-cover: orbit
+image: /assets/images/longevity-plan-review-loop.png
+image_alt: "Health charts becoming a short prioritized plan that returns through a monthly review loop"
 ---
 
 Two earlier posts here cover getting health data collected ([synced automatically from a phone into a structured file]({% post_url 2026-08-06-health-connect-google-drive-sync-android %})) and getting it organized ([filed into a clean, current-state layer on top of a personal archive]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %})). Neither one, on its own, changes what you do at a doctor's visit. A well-organized chart is still a chart. This post is about turning it into a plan, and keeping that plan from going stale the way health resolutions usually do.

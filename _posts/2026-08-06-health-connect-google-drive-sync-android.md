@@ -3,7 +3,8 @@ layout: post
 title: "Syncing Samsung Health Data to Google Drive via Android Health Connect"
 date: 2026-08-06
 topic: "Health data"
-cover: flow
+image: /assets/images/health-connect-drive-sync.png
+image_alt: "Wearables and phones feeding health measurements through daily aggregation into tabular files in cloud storage"
 ---
 
 Two people in my household wear Samsung devices and use Samsung Health. Its dashboard is fine for a quick glance, but it doesn't give you a portable, queryable, long-term record, and it can't show trends across months or years, or across two people at once.

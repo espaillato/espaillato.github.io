@@ -3,7 +3,8 @@ layout: post
 title: "What Actually Fixed a Decade of Google Drive Sprawl"
 date: 2026-05-11
 topic: "Personal archive"
-cover: strata
+image: /assets/images/google-drive-archive-reorganization.png
+image_alt: "A scattered pile of documents being sorted on a table into a small set of orderly archive drawers"
 ---
 
 A shared household Google Drive accumulates documents for years before anyone treats it as a system rather than a dumping ground. Mine had two dozen top-level folders, several of them near-duplicates: a typo'd second category next to the real one, two folders that meant almost the same thing under different names, plus a scattering of one-off folders sitting at the same level as major life categories. No convention for whose document something was, whether it was shared, or whether it was a stable reference or a one-time record.
