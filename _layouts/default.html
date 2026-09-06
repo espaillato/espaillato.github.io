@@ -11,18 +11,36 @@
 {%- else -%}
   {%- assign doc_title = page.title | append: " · " | append: site.title -%}
 {%- endif -%}
+{%- if page.layout == 'post' -%}
+  {%- assign meta_desc = page.description | default: page.excerpt | strip_html | strip_newlines | truncate: 200 -%}
+{%- else -%}
+  {%- assign meta_desc = page.description | default: site.description | strip_newlines -%}
+{%- endif -%}
+{%- if page.image -%}
+  {%- assign og_name = page.image | split: "/" | last | split: "." | first -%}
+  {%- assign og_image = "/assets/og/" | append: og_name | append: ".jpg" | absolute_url -%}
+{%- else -%}
+  {%- assign og_image = "/assets/og/default.jpg" | absolute_url -%}
+{%- endif -%}
 <title>{{ doc_title }}</title>
-<meta name="description" content="{{ page.description | default: site.description | strip_newlines }}">
+<meta name="description" content="{{ meta_desc }}">
 <link rel="canonical" href="{{ page.url | absolute_url }}">
 <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
 <meta property="og:title" content="{{ page.title | default: site.title }}">
-<meta property="og:description" content="{{ page.description | default: site.description | strip_newlines }}">
+<meta property="og:description" content="{{ meta_desc }}">
 <meta property="og:site_name" content="{{ site.title }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
+<meta property="og:image" content="{{ og_image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ page.image_alt | default: site.tagline }}">
 {%- if page.layout == 'post' %}
 <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
 {%- endif %}
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page.title | default: site.title }}">
+<meta name="twitter:description" content="{{ meta_desc }}">
+<meta name="twitter:image" content="{{ og_image }}">
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
