@@ -3,7 +3,7 @@ layout: post
 title: "Separation of Duties: Making Parallel Agents Behave Like a Team"
 date: 2026-08-31
 topic: "Agent systems"
-image: /assets/images/agent-authority-boundaries.png
+image: /assets/images/agent-authority-boundaries.webp
 image_alt: "Three partitioned authority lanes for automatic action, flagged review, and prohibited work, checked by an inspection lens"
 ---
 

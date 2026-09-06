@@ -20,3 +20,5 @@ exclude:
   - Gemfile.lock
   - vendor
   - LICENSE
+  - script
+  - .venv

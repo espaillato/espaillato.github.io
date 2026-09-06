@@ -3,7 +3,7 @@ layout: post
 title: "What Actually Fixed a Decade of Google Drive Sprawl"
 date: 2026-05-11
 topic: "Personal archive"
-image: /assets/images/google-drive-archive-reorganization.png
+image: /assets/images/google-drive-archive-reorganization.webp
 image_alt: "A scattered pile of documents being sorted on a table into a small set of orderly archive drawers"
 ---
 

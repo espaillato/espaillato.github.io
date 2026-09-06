@@ -3,7 +3,7 @@ layout: post
 title: "Turning a Health Chart Into an Actual Plan, and Keeping It Current"
 date: 2026-08-10
 topic: "Health data"
-image: /assets/images/longevity-plan-review-loop.png
+image: /assets/images/longevity-plan-review-loop.webp
 image_alt: "Health charts becoming a short prioritized plan that returns through a monthly review loop"
 ---
 

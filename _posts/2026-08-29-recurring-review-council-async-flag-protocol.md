@@ -3,7 +3,7 @@ layout: post
 title: "From One Auditor to a Council of Specialists"
 date: 2026-08-29
 topic: "Agent systems"
-image: /assets/images/recurring-review-council.png
+image: /assets/images/recurring-review-council.webp
 image_alt: "A shared annotated document connected to several specialist review instruments arriving on a recurring schedule"
 ---
 

@@ -3,7 +3,7 @@ layout: post
 title: "Windows + WSL Development Environment (Setup Guide)"
 date: 2025-12-24
 topic: "Tooling"
-image: /assets/images/windows-wsl-development-environment.png
+image: /assets/images/windows-wsl-development-environment.webp
 image_alt: "Two adjacent workspaces joined by a doorway, with a desktop on one side and a secure terminal and development tools on the other"
 ---
 
