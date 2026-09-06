@@ -3,7 +3,7 @@ layout: post
 title: "A Personal Decision System Built on Top of a Document Archive"
 date: 2026-09-04
 topic: "Personal systems"
-image: /assets/images/personal-decision-system.png
+image: /assets/images/personal-decision-system.webp
 image_alt: "A document archive flowing into a linked knowledge base, three review checkpoints, and a final action marker"
 ---
 
@@ -153,6 +153,8 @@ The first fallback was a short persona summary in a shared note. It kept the tas
 The fix was to externalize the review context into ordinary, versioned reference files that every relevant process can read. Each reviewer now has a mandate document, and the mechanics shared by all reviewers live in one shared protocol. Scheduled tasks point to those files instead of carrying private copies of the rules.
 
 This is a small design change with a useful general lesson: if a recurring process depends on context, that context is part of the system's data. It should be stored somewhere accessible, reviewable, and versioned, not hidden inside the configuration of the one task that usually uses it.
+
+Externalizing the context has a second benefit: it makes the setup model-agnostic. Everything a reviewer needs is in the documents, so the instruction is just "read your persona document and do what it says." I have started running the same review on different models to see how their suggestions differ. It also allows a split by capability: the frequent maintenance loop can run against a small local model, while the specialist reviews run on higher-capability ones.
 
 ## 8. What has to be sanitized {#sanitization}
 
