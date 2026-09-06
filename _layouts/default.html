@@ -41,6 +41,7 @@
 <meta name="twitter:title" content="{{ page.title | default: site.title }}">
 <meta name="twitter:description" content="{{ meta_desc }}">
 <meta name="twitter:image" content="{{ og_image }}">
+{%- feed_meta %}
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
@@ -53,6 +54,7 @@
       <span class="brand-name">{{ site.title }}</span>
     </a>
     <nav class="site-nav" aria-label="External links">
+      <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
       {%- if site.linkedin %}
       <a href="{{ site.linkedin }}" rel="me noopener" target="_blank">LinkedIn<span aria-hidden="true"> ↗</span></a>
       {%- endif %}
@@ -69,6 +71,8 @@
     <span>{{ site.tagline }}</span>
     <span class="dot" aria-hidden="true">·</span>
     <span>Built with Jekyll, hosted on GitHub Pages</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
     {%- if site.linkedin %}
     <span class="dot" aria-hidden="true">·</span>
     <a href="{{ site.linkedin }}" rel="me noopener" target="_blank">LinkedIn</a>

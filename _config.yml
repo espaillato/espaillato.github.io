@@ -13,6 +13,12 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
+plugins:
+  - jekyll-feed
+
+feed:
+  path: feed.xml
+
 exclude:
   - post_template.md
   - README.md
