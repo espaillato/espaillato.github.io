@@ -50,7 +50,7 @@ The setup guide asks for the opposite: drop a few dozen files into an inbox fold
 
 The first version of the kit lived in a shared Google Drive folder — a zip file and a set of docs I could hand to the two people who'd actually asked for it. That was fine for two people. It meant every future update was a re-share, and it meant anyone else who wanted to try it needed to know me first.
 
-Moving it to a public git repository under an MIT license changes the actual audience from "people I send a link to" to "anyone who finds it." That's a bigger decision than it sounds like, because a public repo gets read by people with no context on why a rule exists, which means every instruction in it has to justify itself on the page rather than relying on a shared conversation to fill in the gaps. Rewriting the setup guide for that audience caught a handful of places where a rule was stated but the reasoning behind it wasn't, which is worth doing even for something that never leaves a Drive folder.
+Moving it to a [public git repository](https://github.com/espaillato/DriveOrganizerStarterKit) under an MIT license changes the actual audience from "people I send a link to" to "anyone who finds it." That's a bigger decision than it sounds like, because a public repo gets read by people with no context on why a rule exists, which means every instruction in it has to justify itself on the page rather than relying on a shared conversation to fill in the gaps. Rewriting the setup guide for that audience caught a handful of places where a rule was stated but the reasoning behind it wasn't, which is worth doing even for something that never leaves a Drive folder.
 
 ## 5. Shipping skills as source, not packages {#skills-as-source}
 
