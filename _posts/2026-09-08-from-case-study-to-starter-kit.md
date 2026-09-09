@@ -18,6 +18,7 @@ More than I expected. Most of it wasn't writing new logic — the mandates and t
 - [Shipping skills as source, not packages](#skills-as-source)
 - [A tooling boundary I didn't expect](#tooling-boundary)
 - [What's actually in the repo](#contents)
+- [Getting started](#getting-started)
 - [End state](#end-state)
 
 ---
@@ -88,6 +89,20 @@ SETUP_GUIDE.md, BOOTSTRAP_PROMPT.md
 ```
 
 Running the setup script asks where the two template folders should live, copies them there without touching anything already in place, and builds the two installable skill packages from source. Everything past that point is the setup guide: adapt the rulebook, open the vault, hand the assistant the bootstrap prompt, and start dropping in real documents a few at a time.
+
+## 8. Getting started {#getting-started}
+
+You need a cloud-synced folder your assistant can read (the kit assumes Google Drive), Obsidian for the vault, Claude API access for the scheduled reviews, and git. Then:
+
+```bash
+git clone https://github.com/espaillato/DriveOrganizerStarterKit.git
+cd DriveOrganizerStarterKit
+./setup.sh        # ./setup.ps1 on Windows
+```
+
+The script asks two questions — where the File Archive folder should live and where the Living Reference vault should go — copies the templates into those locations without touching anything already there, and builds the two `.skill` packages from source. `SETUP_GUIDE.md` documents the same steps by hand if you'd rather not run the script.
+
+From there: adapt `Organization_Philosophy.md` to your own categories, open the vault in Obsidian, install the two skills, and hand the assistant the prompt in `BOOTSTRAP_PROMPT.md`. Then start dropping documents into `Unsorted/` a batch at a time. There is no target for filing the whole archive at once — as [section 3](#incremental) covers, it is meant to accumulate over weeks of ordinary use, with the scheduled reviews keeping it current from there.
 
 ## End state {#end-state}
 

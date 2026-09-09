@@ -23,6 +23,7 @@ The source is open: [espaillato/HealthSync](https://github.com/espaillato/Health
 - [Android 14's second permission-rationale requirement](#android-14-manifest)
 - [Running it on two sideloaded phones](#two-phones)
 - [Blood pressure: a hardware limit, a Health Connect wall, and a manual import path](#blood-pressure-import)
+- [Running it yourself](#getting-started)
 - [End state](#end-state)
 
 ---
@@ -166,6 +167,28 @@ That's where it stopped working. The watch's BP readings live in a separate app 
 **Every export overlaps the last one, so duplicate handling runs every time, not occasionally.** The BP app's own export options are fixed, overlapping windows (a week, two weeks, a month, three months, year-to-date), so re-exporting routinely re-covers ground already synced. Two layers handle that: each reading's `source_record_id` is derived from its own timestamp, so an already-uploaded reading is skipped automatically, and a second dedup step inside the upload catches what that alone can't — two overlapping *staged but not-yet-synced* imports both producing the same ID within a single upload batch.
 
 One more thing: an early debug aid wrote the raw parsed report to external storage so it could be pulled and inspected during development. Once it had served its purpose it kept writing anyway — a name, a date of birth, and every reading, sitting on disk with nothing to clean it up. I removed it once I noticed. The on-screen preview already shows what was parsed, and closing the screen should be the end of it.
+
+---
+
+## 10. Running it yourself {#getting-started}
+
+The [repo](https://github.com/espaillato/HealthSync) has a full build-it-yourself guide; the short version is three parts.
+
+**Build the APK.** You need JDK 17+ and the Android SDK (`minSdk 26`, so any phone on Android 8 or newer that has Health Connect). Then:
+
+```
+git clone https://github.com/espaillato/HealthSync
+cd HealthSync
+./gradlew assembleRelease
+```
+
+For a quick trial `assembleDebug` is fine; for anything you'll keep updating, set up a release keystore first, because regenerating it later invalidates every future install — back the `.jks` up somewhere durable.
+
+**Set up the Google side once.** Create a service account, add a JSON key, and enable the Drive API. In Drive, make a folder shared to the service account's email as Editor, and pre-create one empty CSV per person inside it — the service account can't create files itself (the quota gotcha from [section 4](#drive-service-account)).
+
+**Install and configure on each phone.** Sideload the APK, tap **Import Drive Key** and pick the JSON file, enter a name (it becomes the CSV owner and the filename), and grant Health Connect permissions on both screens — the per-category one and the "additional access" one for history and background sync.
+
+After that it syncs on its own around 2am; **Sync Now** forces an immediate run. Sync frequency is a single constant (`SYNC_INTERVAL_DAYS` in `SyncWorker.kt`). The repo's `CLAUDE.md` will walk an AI coding agent through the same setup if you'd rather not do it by hand.
 
 ---
 
