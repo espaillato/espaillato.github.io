@@ -11,6 +11,8 @@ Two people in my household wear Samsung devices and use Samsung Health. Its dash
 
 This is the Android app I built to fix that. It reads everything Health Connect exposes, aggregates it sensibly, and appends it to a per-person CSV file in Google Drive. No backend server, no third-party service, just the phone and a Drive folder.
 
+The source is open: [espaillato/HealthSync](https://github.com/espaillato/HealthSync). The sections below are the design decisions and bugs behind it.
+
 - [Why this exists: source data for something else](#why-this-exists)
 - [Why Health Connect, not Samsung Health directly](#why-health-connect)
 - [Architecture](#architecture)
@@ -176,5 +178,6 @@ One more thing: an early debug aid wrote the raw parsed report to external stora
 - A second data source (a manually-shared PDF export, for the one metric Health Connect structurally can't reach) folding into the same upload path as everything else.
 - Zero servers, zero recurring cost, zero third-party services beyond Drive itself.
 - Clean, structured data landing exactly where [the archive's Health category]({% post_url 2026-05-11-google-drive-file-archive-canonical-reorg %}) expects it — the actual raw material the living-reference layer needs.
+- The full source is on GitHub: [espaillato/HealthSync](https://github.com/espaillato/HealthSync).
 
 Most of these bugs — the scheduling gap, the flash-closing permission screen, the unreachable backfilled history, the PDF layout mismatch — weren't visible from reading code or docs. They showed up by running the app on real devices and checking system state: `dumpsys`, `logcat`, the Drive file contents. Health and scheduling APIs on Android have a wide gap between what the docs say and what the OS does.
