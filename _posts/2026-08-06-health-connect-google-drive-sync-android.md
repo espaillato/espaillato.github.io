@@ -182,11 +182,11 @@ cd HealthSync
 ./gradlew assembleRelease
 ```
 
-For a quick trial `assembleDebug` is fine; for anything you'll keep updating, set up a release keystore first, because regenerating it later invalidates every future install — back the `.jks` up somewhere durable.
+For a quick trial `assembleDebug` is fine; for anything you'll keep updating, set up a release keystore first, because regenerating it later invalidates every future install, so back the `.jks` up somewhere durable.
 
-**Set up the Google side once.** Create a service account, add a JSON key, and enable the Drive API. In Drive, make a folder shared to the service account's email as Editor, and pre-create one empty CSV per person inside it — the service account can't create files itself (the quota gotcha from [section 4](#drive-service-account)).
+**Set up the Google side once.** Create a service account, add a JSON key, and enable the Drive API. In Drive, make a folder shared to the service account's email as Editor, and pre-create one empty CSV per person inside it, because the service account can't create files itself (the quota gotcha from [section 4](#drive-service-account)).
 
-**Install and configure on each phone.** Sideload the APK, tap **Import Drive Key** and pick the JSON file, enter a name (it becomes the CSV owner and the filename), and grant Health Connect permissions on both screens — the per-category one and the "additional access" one for history and background sync.
+**Install and configure on each phone.** Sideload the APK, tap **Import Drive Key** and pick the JSON file, enter a name (it becomes the CSV owner and the filename), and grant Health Connect permissions on both screens: the per-category one, and the "additional access" one for history and background sync.
 
 After that it syncs on its own around 2am; **Sync Now** forces an immediate run. Sync frequency is a single constant (`SYNC_INTERVAL_DAYS` in `SyncWorker.kt`). The repo's `CLAUDE.md` will walk an AI coding agent through the same setup if you'd rather not do it by hand.
 

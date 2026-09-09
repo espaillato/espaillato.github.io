@@ -100,9 +100,9 @@ cd DriveOrganizerStarterKit
 ./setup.sh        # ./setup.ps1 on Windows
 ```
 
-The script asks two questions — where the File Archive folder should live and where the Living Reference vault should go — copies the templates into those locations without touching anything already there, and builds the two `.skill` packages from source. `SETUP_GUIDE.md` documents the same steps by hand if you'd rather not run the script.
+The script asks two questions (where the File Archive folder should live, and where the Living Reference vault goes), then copies the templates into those locations without touching anything already there and builds the two `.skill` packages from source. `SETUP_GUIDE.md` documents the same steps by hand if you'd rather not run the script.
 
-From there: adapt `Organization_Philosophy.md` to your own categories, open the vault in Obsidian, install the two skills, and hand the assistant the prompt in `BOOTSTRAP_PROMPT.md`. Then start dropping documents into `Unsorted/` a batch at a time. There is no target for filing the whole archive at once — as [section 3](#incremental) covers, it is meant to accumulate over weeks of ordinary use, with the scheduled reviews keeping it current from there.
+From there: adapt `Organization_Philosophy.md` to your own categories, open the vault in Obsidian, install the two skills, and hand the assistant the prompt in `BOOTSTRAP_PROMPT.md`. Then start dropping documents into `Unsorted/` a batch at a time. There is no target for filing the whole archive at once. As [section 3](#incremental) covers, it is meant to accumulate over weeks of ordinary use, with the scheduled reviews keeping it current from there.
 
 ## End state {#end-state}
 
